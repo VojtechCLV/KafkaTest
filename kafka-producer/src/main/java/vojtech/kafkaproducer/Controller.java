@@ -14,12 +14,12 @@ public class Controller {
         this.kafkaProducer = kafkaProducer;
     }
 
-    @Value("${custom.kafka.producer.topic.name}")
+    @Value("${custom.kafka.topic.name}")
     private String topicName;
 
     @GetMapping("/publish")
     public ResponseEntity<String> publish(@RequestParam("message") String message){
-        kafkaProducer.sendMessage(message);
+        kafkaProducer.sendMessage(topicName,message);
         return ResponseEntity.ok(String.format("Sending message to Kafka topic <b>%s</b> <br> Message: <i>%s</i>",
                 topicName, message));
     }

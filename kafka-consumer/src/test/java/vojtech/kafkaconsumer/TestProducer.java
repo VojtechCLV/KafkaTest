@@ -1,5 +1,6 @@
-package vojtech.kafkaproducer;
+package vojtech.kafkaconsumer;
 
+import org.apache.kafka.clients.producer.KafkaProducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,8 +8,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
-public class KafkaProducer {
-
+public class TestProducer {
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaProducer.class);
 
     @Autowired

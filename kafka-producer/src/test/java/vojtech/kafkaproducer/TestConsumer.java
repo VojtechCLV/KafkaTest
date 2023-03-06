@@ -1,4 +1,4 @@
-package vojtech.kafkaconsumer;
+package vojtech.kafkaproducer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,17 +8,14 @@ import org.springframework.stereotype.Component;
 import java.util.concurrent.CountDownLatch;
 
 @Component
-public class KafkaConsumer {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(KafkaConsumer.class);
-
+public class TestConsumer {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestConsumer.class);
     private CountDownLatch latch = new CountDownLatch(1);
-
     private String message;
 
     @KafkaListener(topics = "${custom.kafka.topic.name}",
             groupId = "${spring.kafka.consumer.group-id}")
-    public void receive(String incomingMessage){
+    public void receive(String incomingMessage) {
         LOGGER.info(String.format("Received message = '%s'", incomingMessage));
         message = incomingMessage;
         latch.countDown();
