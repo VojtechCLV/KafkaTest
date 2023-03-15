@@ -20,9 +20,9 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.awaitility.Awaitility;
 import vojtech.kafkaproducer.util.PersonGenerator;
 import vojtech.model.Person;
-import org.junit.Test;
+//import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.runner.RunWith;
+//import org.junit.runner.RunWith;
 import io.confluent.kafka.schemaregistry.client.rest.entities.SchemaString;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -38,7 +38,7 @@ import static org.hamcrest.Matchers.equalTo;
 @AutoConfigureWireMock(port=0)
 @DirtiesContext
 @SpringBootTest(classes = { IntegrationConfig.class })
-@RunWith(SpringJUnit4ClassRunner.class)
+//@RunWith(SpringJUnit4ClassRunner.class)
 @EmbeddedKafka(partitions = 1, brokerProperties = { "listeners=PLAINTEXT://localhost:9092", "port=9092" })
 @ActiveProfiles({ "test" })
 @TestPropertySource(locations="classpath:test.properties")

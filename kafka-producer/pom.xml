@@ -153,11 +153,19 @@
 			<scope>test</scope>
 		</dependency>
 
-        <dependency>
+<!--        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
-        </dependency>
+        </dependency>-->
+
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<version>5.9.2</version>
+			<scope>test</scope>
+		</dependency>
+
     </dependencies>
 
 	<build>
@@ -171,6 +179,10 @@
 				<groupId>org.apache.avro</groupId>
 				<artifactId>avro-maven-plugin</artifactId>
 				<version>${avro.version}</version>
+				<configuration>
+					<!-- Let's try to get rid of CharSequence to satisfy JPA -->
+					<stringType>String</stringType>
+				</configuration>
 				<executions>
 					<execution>
 						<id>schemas</id>

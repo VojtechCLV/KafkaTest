@@ -1,4 +1,4 @@
-package vojtech.kafkaproducer.person2;
+package vojtech.kafkaproducer.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

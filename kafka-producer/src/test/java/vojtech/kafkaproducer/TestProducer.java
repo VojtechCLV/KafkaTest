@@ -6,9 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import vojtech.model.Person;
 
-@Component
+@Service
 public class TestProducer {
     private static final Logger LOGGER = LoggerFactory.getLogger(TestProducer.class);
 

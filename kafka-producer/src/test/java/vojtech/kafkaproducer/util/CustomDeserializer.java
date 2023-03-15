@@ -14,9 +14,9 @@ import java.io.IOException;
 import java.util.Arrays;
 
 @Component
-public class AvroDeserializer implements Deserializer<Person> {
+public class CustomDeserializer implements Deserializer<Person> {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(AvroDeserializer.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(CustomDeserializer.class);
 
     @Override
     public Person deserialize(String topic, byte[] data) {

@@ -15,10 +15,10 @@ import java.util.Arrays;
 import java.util.Map;
 
 @Component
-public class AvroSerializer implements Serializer<Person> {
+public class CustomSerializer implements Serializer<Person> {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AvroSerializer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CustomSerializer.class);
 
     @Override
     public void configure(Map<String, ?> configs, boolean isKey) {

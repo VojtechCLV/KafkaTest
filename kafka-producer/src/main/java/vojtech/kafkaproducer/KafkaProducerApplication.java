@@ -2,13 +2,15 @@ package vojtech.kafkaproducer;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
 @ComponentScan("vojtech.kafkaproducer")
-//@EnableJpaRepositories("vojtech.kafkaproducer.*")
+@EnableJpaRepositories("vojtech.*")
 @ComponentScan(basePackages = { "vojtech.kafkaproducer.*" })
-//@EntityScan("vojtech.model")
+@EntityScan("vojtech.kafkaproducer.entity")
 public class KafkaProducerApplication {
 
 	public static void main(String[] args) {

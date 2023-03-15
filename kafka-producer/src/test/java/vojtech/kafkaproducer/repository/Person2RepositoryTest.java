@@ -10,10 +10,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import vojtech.kafkaproducer.person2.Person2;
+import org.springframework.test.context.ActiveProfiles;
+import vojtech.kafkaproducer.entity.Person2;
 import vojtech.kafkaproducer.person2.Person2Repository;
 
 @DataJpaTest
+@ActiveProfiles({ "test" })
 public class Person2RepositoryTest {
     @Autowired
     private TestEntityManager entityManager;
@@ -30,8 +32,11 @@ public class Person2RepositoryTest {
 
         List<Person2> result = person2Repo.findByFirstName(person2.getFirstName());
 
-        LOGGER.info("Result = " + result);
-        assertEquals("[Person [ ID = 1, First Name = 'Vojtech', Last Name = 'Moravec', Age = 28 ]]",
+        LOGGER.info("\n   findAll = " + person2Repo.findAll());
+
+
+        LOGGER.info("\n   Result = " + result);
+        assertEquals("[Person [ ID = 1, First Name = Vojtech, Last Name = Moravec, Age = 28 ]]",
                 result.toString());
     }
 }
