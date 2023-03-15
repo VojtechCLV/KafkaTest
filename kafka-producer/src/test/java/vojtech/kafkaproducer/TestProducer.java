@@ -1,22 +1,23 @@
-package vojtech.kafkaconsumer;
+package vojtech.kafkaproducer;
 
-import org.apache.kafka.clients.producer.KafkaProducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 import vojtech.model.Person;
 
 @Component
 public class TestProducer {
-    private static final Logger LOGGER = LoggerFactory.getLogger(KafkaProducer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestProducer.class);
 
     @Autowired
-    private KafkaTemplate<String, Person> kafkaTemplate;
+    @Qualifier("embeddedTemplate")
+    private KafkaTemplate<String, Person> embeddedKafkaTemplate;
 
     public void sendMessage(String topic, Person person){
-        kafkaTemplate.send(topic, person);
+        embeddedKafkaTemplate.send(topic, person);
         LOGGER.info("\n   Published message: \"" + person + "\"\n   on topic: \"" + topic + "\"");
     }
 }

@@ -6,6 +6,9 @@ import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
 @ComponentScan("vojtech.kafkaproducer")
+//@EnableJpaRepositories("vojtech.kafkaproducer.*")
+@ComponentScan(basePackages = { "vojtech.kafkaproducer.*" })
+//@EntityScan("vojtech.model")
 public class KafkaProducerApplication {
 
 	public static void main(String[] args) {

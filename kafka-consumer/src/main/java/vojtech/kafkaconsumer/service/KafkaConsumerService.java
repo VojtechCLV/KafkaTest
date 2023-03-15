@@ -8,15 +8,12 @@ import org.springframework.stereotype.Service;
 import vojtech.model.Person;
 
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class KafkaConsumerService {
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaConsumerService.class);
 
     private CountDownLatch latch = new CountDownLatch(1);
-
-    final AtomicInteger counter = new AtomicInteger();
 
     private String message;
 
@@ -43,41 +40,3 @@ public class KafkaConsumerService {
         System.out.println("Person's age is : " + person.getAge());
     }
 }
-
-
-
-
-
-
-
-/*    AvroSerializer serializer = new AvroSerializer();
-
-
-    public void sendMessage(String topic, Person person){
-
-        kafkaTemplate.send(topic, person);
-        LOGGER.info(String.format("\n   Published message: \"%s\"" +
-                "\n   Person's name: \"%s\"" +
-                "\n   Person's age: \"%s\"" +
-                "\n   on topic: \"%s\"",person.toString(), person.getName(), person.getAge(), topic));
-    }
-
-    @Value("${custom.kafka.topic.name}")
-    private String topic;*/
-
-/*    public void sendMessage(String topic, Person person){
-        ListenableFuture<SendResult<String,Person>> future = (ListenableFuture<SendResult<String, Person>>) kafkaTemplate.send(topic, person);
-        future.addCallback(new ListenableFutureCallback<SendResult<String, Person>>() {
-            @Override
-            public void onFailure(Throwable ex) {
-                System.out.println("Message failed to produce");
-            }
-
-            @Override
-            public void onSuccess(SendResult<String, Person> result) {
-                System.out.println("Avro message successfully produced");
-            }
-        });
-
-    }*/
-//}

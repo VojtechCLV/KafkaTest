@@ -7,8 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import vojtech.model.Person;
-
-import java.util.Random;
+import vojtech.kafkaproducer.util.PersonGenerator;
 
 @Service
 public class KafkaProducerService {
@@ -23,16 +22,11 @@ public class KafkaProducerService {
 
     public void autoSend() throws InterruptedException {
         for (int i=0; i<10; i++) {
-            Random random = new Random();
-
-            String randomString = random.ints(97, 123)
-                    .limit(8)
-                    .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
-                    .toString();
-            String generatedName = randomString.substring(0, 1).toUpperCase() + randomString.substring(1);
             try {
                 Thread.sleep(10000);
-                Person person = new Person(generatedName, 20 + random.nextInt(60));
+                Person person = new Person(
+                        PersonGenerator.randomName(),
+                        PersonGenerator.randomAge());
                 sendMessage(topic, person);
             }
             catch (Exception e) {
@@ -44,9 +38,9 @@ public class KafkaProducerService {
     public void sendMessage(String topic, Person person){
 
         kafkaTemplate.send(topic, person);
-        LOGGER.info(String.format("\n   Published message: \"%s\"" +
-                "\n   Person's name: \"%s\"" +
-                "\n   Person's age: \"%s\"" +
-                "\n   on topic: \"%s\"", person.toString(), person.getName(), person.getAge(), topic));
+        LOGGER.info("\n   Published message: \"" + person.toString() + "\"" +
+                "\n   Person's name: \"" + person.getName() + "\"" +
+                "\n   Person's age: \"" + person.getAge() + "\"" +
+                "\n   on topic: \"" + topic + "\"");
     }
 }

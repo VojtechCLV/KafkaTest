@@ -1,11 +1,7 @@
 package vojtech.kafkaproducer.config;
 
-import io.confluent.kafka.serializers.KafkaAvroDeserializer;
-import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig;
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
-import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -13,9 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
-import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import vojtech.model.Person;
-//import vojtech.kafkaproducer.util.AvroSerializer;
 import io.confluent.kafka.serializers.KafkaAvroSerializerConfig;
 
 import java.util.HashMap;
@@ -30,8 +24,8 @@ public class KafkaProducerConfig {
     @Value("${avro.schema.registry.url}")
     private String schemaRegistry;
 
-    @Bean
-    public ProducerFactory<String, Person> ProducerFactory() {
+    @Bean(name="producerFactory")
+    public ProducerFactory<String, Person> producerFactory() {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
