@@ -1,26 +1,23 @@
 package vojtech.kafkaproducer;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import vojtech.model.Person;
 
 import java.util.concurrent.CountDownLatch;
 
+@Slf4j
 @Service
 public class TestConsumer {
-    private static final Logger LOGGER = LoggerFactory.getLogger(TestConsumer.class);
     private CountDownLatch latch = new CountDownLatch(1);
     private Person personPayload;
 
     @KafkaListener(topics = "${test.kafka.topic.name}",
-            //groupId = "${test.kafka.consumer.group-id}",
-            groupId = "Test2_Group",
+            groupId = "${test.kafka.consumer.group-id}",
             containerFactory = "embeddedKafkaListenerContainerFactory")
     public void receive(Person incomingMessage) {
-        LOGGER.info("Received message = " + incomingMessage.toString());
+        log.info("Received message = " + incomingMessage.toString());
         personPayload = incomingMessage;
         latch.countDown();
     }

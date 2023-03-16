@@ -1,24 +1,20 @@
 package vojtech.kafkaproducer.util;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Serializer;
 import org.springframework.stereotype.Component;
 import vojtech.model.Person;
 import org.apache.avro.io.*;
 import org.apache.avro.specific.SpecificDatumWriter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
 
+@Slf4j
 @Component
 public class CustomSerializer implements Serializer<Person> {
-    private final ObjectMapper objectMapper = new ObjectMapper();
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(CustomSerializer.class);
 
     @Override
     public void configure(Map<String, ?> configs, boolean isKey) {
@@ -31,13 +27,13 @@ public class CustomSerializer implements Serializer<Person> {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         try {
             Encoder jsonEncoder = EncoderFactory.get().jsonEncoder(Person.getClassSchema(), stream);
-            LOGGER.info("   PRE-SERIALIZATION: " + person);
+            log.info("   PRE-SERIALIZATION: " + person);
             writer.write(person, jsonEncoder);
             jsonEncoder.flush();
             data = stream.toByteArray();
-            LOGGER.info("   SERIALIZED DATA: " + Arrays.toString(data));
+            log.info("   SERIALIZED DATA: " + Arrays.toString(data));
         } catch (IOException e) {
-            LOGGER.error("Serialization error " + e.getMessage());
+            log.error("Serialization error: " + e.getMessage());
         }
         return data;
     }

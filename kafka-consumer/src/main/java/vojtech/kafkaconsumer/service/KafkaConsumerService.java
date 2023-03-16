@@ -1,22 +1,22 @@
 package vojtech.kafkaconsumer.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
-import vojtech.kafkaconsumer.PersonRepository;
 import vojtech.kafkaconsumer.StandalonePersonRepository;
-import vojtech.kafkaconsumer.entity.PersonEntity;
 import vojtech.kafkaconsumer.entity.StandalonePersonEntity;
+import vojtech.kafkaconsumer.mapper.PersonMapper;
 import vojtech.model.Person;
 
 import java.util.concurrent.CountDownLatch;
 
+@Slf4j
 @Service
 public class KafkaConsumerService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(KafkaConsumerService.class);
+    private final PersonMapper mapper = Mappers.getMapper(PersonMapper.class);
 
     private CountDownLatch latch = new CountDownLatch(1);
 
@@ -35,9 +35,6 @@ public class KafkaConsumerService {
     }
 
     @Autowired
-    private PersonRepository personRepository;
-
-    @Autowired
     private StandalonePersonRepository standPersonRepository;
 
     @KafkaListener(topics = "${spring.kafka.topic.name}",
@@ -46,30 +43,20 @@ public class KafkaConsumerService {
     public void read(ConsumerRecord<String, Person> record){
         String key=record.key();
         Person person=record.value();
-        System.out.println("Avro message received: \n key: " + key + "\n value : " + person.toString());
-        System.out.println("Person's name is : " + person.getName());
-        System.out.println("Person's age is : " + person.getAge());
+        log.info("Avro message received: \n key: " + key + "\n value : " + person.toString());
 
+        // Load the mapper to map received person into repository-friendly entity
+        StandalonePersonEntity personDst = mapper.sourceToDestination(person);
 
-/*        PersonEntity personEntity = new PersonEntity();
-        personEntity.setName(person.getName());
-        personEntity.setAge(person.getAge());
-        System.out.println("\n   Entity name : " + personEntity.getName());
-        System.out.println("\n   Entity age : " + personEntity.getAge());
-        System.out.println("\n   Entity : " + personEntity);
-        personRepository.save(personEntity);
-        System.out.println("\n   FIND ALL : " + personRepository.findAll());*/
+        // Saving received person into repository
+        standPersonRepository.save(personDst);
 
-
-        StandalonePersonEntity standPerson = new StandalonePersonEntity();
-        standPerson.setName(person.getName());
-        standPerson.setAge(person.getAge());
-        System.out.println("\n   Entity name : " + standPerson.getName());
-        System.out.println("\n   Entity age : " + standPerson.getAge());
-        System.out.println("\n   Entity : " + standPerson);
-        standPersonRepository.save(standPerson);
-        System.out.println("\n   FIND ALL : " + standPersonRepository.findAll());
-
-
+        // Check for people named Honza saved in the session
+        if (standPersonRepository.findByName("Honza").size() == 0) {
+            log.info("\n   Didn't find any Honza... \uD83D\uDCA9");
+        } else {
+            log.info("\n   Found " + standPersonRepository.findByName("Honza").size()
+                    + " instance(s) of Honza! \uD83C\uDF89");
+        }
     }
 }

@@ -1,7 +1,6 @@
 package vojtech.kafkaproducer.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -9,10 +8,9 @@ import org.springframework.stereotype.Service;
 import vojtech.model.Person;
 import vojtech.kafkaproducer.util.PersonGenerator;
 
+@Slf4j
 @Service
 public class KafkaProducerService {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(KafkaProducerService.class);
 
     @Autowired
     private KafkaTemplate<String, Person> kafkaTemplate;
@@ -20,17 +18,18 @@ public class KafkaProducerService {
     @Value("${spring.kafka.topic.name}")
     private String topic;
 
-    public void autoSend() throws InterruptedException {
-        for (int i=0; i<10; i++) {
+    public void autoSend(int messages, long millis) throws InterruptedException {
+        for (int i=0; i<messages; i++) {
             try {
-                Thread.sleep(10000);
+                Thread.sleep(millis);
                 Person person = new Person(
                         PersonGenerator.randomName(),
                         PersonGenerator.randomAge());
                 sendMessage(topic, person);
-            }
-            catch (Exception e) {
-                LOGGER.error(String.valueOf(e.getCause()));
+            }catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                log.info(e.getMessage());
+                break;
             }
         }
     }
@@ -38,7 +37,7 @@ public class KafkaProducerService {
     public void sendMessage(String topic, Person person){
 
         kafkaTemplate.send(topic, person);
-        LOGGER.info("\n   Published message: \"" + person.toString() + "\"" +
+        log.info("\n   Published message: \"" + person.toString() + "\"" +
                 "\n   Person's name: \"" + person.getName() + "\"" +
                 "\n   Person's age: \"" + person.getAge() + "\"" +
                 "\n   on topic: \"" + topic + "\"");

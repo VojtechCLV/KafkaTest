@@ -1,15 +1,14 @@
 package vojtech.kafkaproducer.integration;
 
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.context.annotation.Bean;
@@ -20,9 +19,7 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.awaitility.Awaitility;
 import vojtech.kafkaproducer.util.PersonGenerator;
 import vojtech.model.Person;
-//import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
-//import org.junit.runner.RunWith;
 import io.confluent.kafka.schemaregistry.client.rest.entities.SchemaString;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -35,6 +32,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static org.hamcrest.Matchers.equalTo;
 
+@Slf4j
 @AutoConfigureWireMock(port=0)
 @DirtiesContext
 @SpringBootTest(classes = { IntegrationConfig.class })
@@ -43,10 +41,7 @@ import static org.hamcrest.Matchers.equalTo;
 @ActiveProfiles({ "test" })
 @TestPropertySource(locations="classpath:test.properties")
 public class IntegrationTest {
-    /*
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(IntegrationTest.class);
-
+/*
     private KafkaTestListener testListener;
 
     @Autowired
@@ -84,7 +79,7 @@ public class IntegrationTest {
                 containerFactory = "testKafkaListenerContainerFactory",
                 autoStartup = "true")
         void receive(@Payload final Person person) {
-            LOGGER.info(String.format("\n   Kafka Listener received person named %s", person.getName()));
+            log.info(String.format("\n   Kafka Listener received person named %s", person.getName()));
             counter.incrementAndGet();
         }
     }
@@ -116,7 +111,9 @@ public class IntegrationTest {
                     .pollDelay(100, TimeUnit.MILLISECONDS)
                     .until(testListener.counter::get, equalTo(totalMessages));
         } catch (Exception e) {
-            LOGGER.error("\nOopsie\n" + e.getMessage() + e.getCause());
+            log.error("\nOopsie\n" + e.getMessage() + e.getCause());
         }
     }*/
+
+    //TODO Gotta fix schema registry mocking
 }

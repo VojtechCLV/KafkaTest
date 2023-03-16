@@ -1,8 +1,7 @@
 package vojtech.kafkaproducer.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -10,12 +9,11 @@ import org.springframework.web.bind.annotation.*;
 import vojtech.kafkaproducer.service.KafkaProducerService;
 import vojtech.model.Person;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/kafka")
 public class Controller {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(Controller.class);
 
     @Value("${spring.kafka.topic.name}")
     private String topicName;
@@ -26,32 +24,59 @@ public class Controller {
     @PostMapping("/publish")
     public ResponseEntity<String> sendPerson(@RequestBody Person person) {
         try {
-            LOGGER.info("   Sending person");
+            log.info("   Sending person");
             kafkaProducer.sendMessage(topicName, person);
             return ResponseEntity.ok("Okidoki");
         } catch(Exception e) {
-            LOGGER.error(e.getMessage());
+            log.error(e.getMessage());
             return ResponseEntity.internalServerError().body(e.getCause().toString());
         }
     }
 
     @PostMapping("/start")
-    public ResponseEntity<String> startSending() {
+    public ResponseEntity<String> startSending(@RequestParam Integer messages, @RequestParam Long millis) {
 
-        LOGGER.info("   Starting AutoSend, sending 10 messages, 10 second delay between each");
+        log.info("   Starting AutoSend, sending " + messages + " messages, " + millis + " millisecond delay between each");
         try {
-            Thread newThread = new Thread(() -> {
+            Thread autoSendThread = new Thread(() -> {
                 try {
-                    kafkaProducer.autoSend();
+                    kafkaProducer.autoSend(messages,millis);
+                    while (!Thread.interrupted()) {
+                        Thread.yield();
+                    }
                 } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
                     throw new RuntimeException(e);
                 }
-            });
-            newThread.start();
+            }, "autoSendThread");
+            autoSendThread.start();
             return ResponseEntity.ok("Okidoki");
         } catch(Exception e) {
-            LOGGER.error(e.getMessage());
+            log.error(e.getMessage());
             return ResponseEntity.internalServerError().body(e.getCause().toString());
         }
     }
+
+    @PostMapping("/stop")
+    public ResponseEntity<String> stopSending() {
+
+        try {
+            log.error("Interrupting autoSend thread");
+            //getThreadByName("autoSendThread").interrupt();
+            getThreadByName("autoSendThread").interrupt();
+            }
+        catch(Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.internalServerError().body(e.getCause().toString());
+        }
+        return ResponseEntity.ok("Okidoki");
+    }
+
+    public Thread getThreadByName(String name) {
+        for (Thread thread : Thread.getAllStackTraces().keySet()) {
+            if (thread.getName().equals(name)) return thread;
+        }
+        return null;
+    }
+
 }
