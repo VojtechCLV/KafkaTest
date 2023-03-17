@@ -1,27 +1,26 @@
-package vojtech.kafkaconsumer;
+package vojtech.kafkaconsumer.mapping;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
-import vojtech.kafkaconsumer.entity.StandalonePersonEntity;
+import vojtech.kafkaconsumer.entity.PersonEntity;
 import vojtech.kafkaconsumer.mapper.PersonMapper;
+import vojtech.kafkaconsumer.util.PersonGenerator;
 import vojtech.model.Person;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Slf4j
-public class PersonMapperTest {
+class PersonMapperTest {
 
 
     private final PersonMapper mapper
             = Mappers.getMapper(PersonMapper.class);
 
     @Test
-    public void givenSrcToDst_whenMaps_thenCorrect() {
-        Person personSrc = new Person();
-        personSrc.setName("Test Person Name");
-        personSrc.setAge(99);
-        StandalonePersonEntity personDst = mapper.sourceToDestination(personSrc);
+    void givenSrcToDst_whenMaps_thenCorrect() {
+        Person personSrc = PersonGenerator.getRandomPerson();
+        PersonEntity personDst = mapper.sourceToDestination(personSrc);
 
         log.info("\n   SRC NAME: " + personSrc.getName() + "\n   SRC AGE: " + personSrc.getAge());
         log.info("\n   DST NAME: " + personDst.getName() + "\n   DST AGE: " + personDst.getAge());
@@ -31,10 +30,10 @@ public class PersonMapperTest {
     }
 
     @Test
-    public void givenDstToSrc_whenMaps_thenCorrect() {
-        StandalonePersonEntity personDst = new StandalonePersonEntity();
-        personDst.setName("Test StandalonePersonEntity Name");
-        personDst.setAge(11);
+    void givenDstToSrc_whenMaps_thenCorrect() {
+        PersonEntity personDst = new PersonEntity();
+        personDst.setName(PersonGenerator.randomName());
+        personDst.setAge(PersonGenerator.randomAge());
         Person personSrc = mapper.destinationToSource(personDst);
 
         log.info("\n   DST NAME: " + personDst.getName() + "\n   DST AGE: " + personDst.getAge());

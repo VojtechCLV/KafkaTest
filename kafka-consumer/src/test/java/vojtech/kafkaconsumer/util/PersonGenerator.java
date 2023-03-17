@@ -1,4 +1,4 @@
-package vojtech.kafkaproducer.util;
+package vojtech.kafkaconsumer.util;
 
 import vojtech.model.Person;
 
@@ -9,7 +9,6 @@ public class PersonGenerator {
     private PersonGenerator() {
         throw new IllegalStateException("Random Person Generating Class");
     }
-
     static Random random = new Random();
 
     public static String randomName() {

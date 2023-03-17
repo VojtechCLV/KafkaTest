@@ -1,6 +1,7 @@
 package vojtech.kafkaproducer;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import vojtech.model.Person;
@@ -10,15 +11,18 @@ import java.util.concurrent.CountDownLatch;
 @Slf4j
 @Service
 public class TestConsumer {
+
     private CountDownLatch latch = new CountDownLatch(1);
-    private Person personPayload;
+    private Person payload;
 
     @KafkaListener(topics = "${test.kafka.topic.name}",
-            groupId = "${test.kafka.consumer.group-id}",
-            containerFactory = "embeddedKafkaListenerContainerFactory")
-    public void receive(Person incomingMessage) {
-        log.info("Received message = " + incomingMessage.toString());
-        personPayload = incomingMessage;
+            autoStartup = "true",
+            containerFactory = "embeddedKafkaListenerContainerFactory",
+            groupId = "Test_Group")
+    public void receive(ConsumerRecord<?, Person> consumerRecord) {
+        log.info("received payload = '{}'", consumerRecord.toString());
+        log.info("   VALUE: = '{}'", consumerRecord.value().toString());
+        payload = consumerRecord.value();
         latch.countDown();
     }
 
@@ -26,11 +30,11 @@ public class TestConsumer {
         latch = new CountDownLatch(1);
     }
 
-    public CountDownLatch getLatch() {
-        return latch;
+    public Person getPayload() {
+        return payload;
     }
 
-    public Person getPersonPayload() {
-        return personPayload;
+    public CountDownLatch getLatch() {
+        return latch;
     }
 }

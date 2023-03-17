@@ -19,7 +19,7 @@ public class CustomDeserializer implements Deserializer<Person> {
     @Override
     public Person deserialize(String topic, byte[] data) {
         DatumReader<Person> reader = new SpecificDatumReader<>(Person.class);
-        Decoder decoder = null;
+        Decoder decoder;
         log.info("   SERIALIZED DATA: " + Arrays.toString(data));
         try {
             decoder = DecoderFactory.get()

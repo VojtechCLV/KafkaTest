@@ -27,7 +27,6 @@ public class CustomSerializer implements Serializer<Person> {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         try {
             Encoder jsonEncoder = EncoderFactory.get().jsonEncoder(Person.getClassSchema(), stream);
-            log.info("   PRE-SERIALIZATION: " + person);
             writer.write(person, jsonEncoder);
             jsonEncoder.flush();
             data = stream.toByteArray();

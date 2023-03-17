@@ -1,10 +1,10 @@
-package vojtech.kafkaproducer.embedded;
+package vojtech.kafkaconsumer.embedded;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import io.confluent.kafka.schemaregistry.client.SchemaRegistryClient;
+import io.confluent.kafka.schemaregistry.testutil.MockSchemaRegistry;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,16 +14,21 @@ import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
-import vojtech.kafkaproducer.TestConsumer;
-import vojtech.kafkaproducer.TestPerson;
-import vojtech.kafkaproducer.TestProducer;
+import vojtech.kafkaconsumer.TestConsumer;
+import vojtech.kafkaconsumer.TestProducer;
+import vojtech.kafkaconsumer.repository.PersonRepository;
 import vojtech.model.Person;
 
 import java.util.concurrent.TimeUnit;
 
+// TODO
+// Enable Schema Registry mocking so specific 5 Avro bytes are present in integration testing
+// without actual Schema Registry present on network
+
 @Slf4j
 @SpringBootTest(classes = {
 		EmbeddedConfig.class,
+		PersonRepository.class,
 		TestProducer.class,
 		TestConsumer.class
 })
@@ -40,28 +45,18 @@ class EmbeddedKafkaTest {
 	@Autowired
 	private TestProducer producer;
 
-	@Value("${test.kafka.topic.name}")
+	@Value("${test.topic}")
 	private String topic;
 
-	Person testPerson = TestPerson.getTestPerson();
-
-	@BeforeEach
-	void setup() {
-		consumer.resetLatch();
-	}
-
 	@Test
-	void givenEmbeddedKafkaBroker_whenSendingWithCustomSerDe_thenMessagePojoReceived() throws Exception {
+	void givenEmbeddedKafkaBroker_whenSendingWithSimpleProducer_thenMessageReceived()
+			throws Exception {
+		Person testPerson = new Person("Tester",1);
+
 		producer.send(topic, testPerson);
 
-		log.info("\n   Publishing message: " + testPerson + " \n   Topic: " + topic);
-
-		boolean messageConsumed = consumer.getLatch()
-				.await(10, TimeUnit.SECONDS);
+		boolean messageConsumed = consumer.getLatch().await(10, TimeUnit.SECONDS);
 		assertTrue(messageConsumed);
-		assertEquals(testPerson.getName(), consumer.getPayload().getName());
-		assertEquals(testPerson.getAge(), consumer.getPayload().getAge());
+		assertTrue(consumer.getPayload().toString().contains(testPerson.toString()));
 	}
-
-	// TODO Find out why are we stuck in  JoinGroup loop all of a sudden...
 }

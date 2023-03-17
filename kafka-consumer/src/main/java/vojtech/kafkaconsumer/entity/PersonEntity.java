@@ -1,12 +1,10 @@
 package vojtech.kafkaconsumer.entity;
 
 import jakarta.persistence.*;
-import vojtech.model.Person;
-
 
 @Entity
 @Table(name="person")
-public class PersonEntity extends Person {
+public class PersonEntity {
 
     @Id
     @Column(name="id")
@@ -25,20 +23,26 @@ public class PersonEntity extends Person {
                 + " ]");
     }
 
-/*    @Column(name="name")
-    private String name;*/
-
-    protected String name;
+    @Column(name="name")
+    private String name;
 
     public void setName(String name){
-        super.setName(name);
+        this.name = name;
     }
 
-    public String getName(String name){
-        return super.getName();
+    public String getName(){
+        return this.name;
     }
+
 
     @Column(name="age")
     private Integer age;
 
+    public void setAge(Integer age){
+        this.age = age;
+    }
+
+    public Integer getAge(){
+        return this.age;
+    }
 }

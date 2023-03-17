@@ -1,13 +1,10 @@
-package vojtech.kafkaconsumer;
-
-
-import java.util.List;
-import java.util.Optional;
+package vojtech.kafkaconsumer.repository;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import vojtech.kafkaconsumer.entity.PersonEntity;
-//import vojtech.model.Person;
+
+import java.util.List;
 
 @Repository
 public interface PersonRepository extends CrudRepository<PersonEntity, Long> {

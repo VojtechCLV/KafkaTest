@@ -22,9 +22,7 @@ public class KafkaProducerService {
         for (int i=0; i<messages; i++) {
             try {
                 Thread.sleep(millis);
-                Person person = new Person(
-                        PersonGenerator.randomName(),
-                        PersonGenerator.randomAge());
+                Person person = PersonGenerator.getRandomPerson();
                 sendMessage(topic, person);
             }catch (InterruptedException e) {
                 Thread.currentThread().interrupt();

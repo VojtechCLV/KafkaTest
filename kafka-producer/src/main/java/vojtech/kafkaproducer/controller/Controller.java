@@ -18,6 +18,8 @@ public class Controller {
     @Value("${spring.kafka.topic.name}")
     private String topicName;
 
+    static final String OKRESPONSE = "Ok";
+
     @Autowired
     KafkaProducerService kafkaProducer;
 
@@ -26,7 +28,7 @@ public class Controller {
         try {
             log.info("   Sending person");
             kafkaProducer.sendMessage(topicName, person);
-            return ResponseEntity.ok("Okidoki");
+            return ResponseEntity.ok(OKRESPONSE);
         } catch(Exception e) {
             log.error(e.getMessage());
             return ResponseEntity.internalServerError().body(e.getCause().toString());
@@ -50,7 +52,7 @@ public class Controller {
                 }
             }, "autoSendThread");
             autoSendThread.start();
-            return ResponseEntity.ok("Okidoki");
+            return ResponseEntity.ok(OKRESPONSE);
         } catch(Exception e) {
             log.error(e.getMessage());
             return ResponseEntity.internalServerError().body(e.getCause().toString());
@@ -62,14 +64,13 @@ public class Controller {
 
         try {
             log.error("Interrupting autoSend thread");
-            //getThreadByName("autoSendThread").interrupt();
             getThreadByName("autoSendThread").interrupt();
             }
         catch(Exception e) {
             log.error(e.getMessage());
             return ResponseEntity.internalServerError().body(e.getCause().toString());
         }
-        return ResponseEntity.ok("Okidoki");
+        return ResponseEntity.ok(OKRESPONSE);
     }
 
     public Thread getThreadByName(String name) {

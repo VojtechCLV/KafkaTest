@@ -14,7 +14,7 @@ import java.util.List;
 @Slf4j
 @DataJpaTest
 @ActiveProfiles({ "test" })
-public class PersonRepositoryTest {
+class PersonRepositoryTest {
 
     @Autowired
     private TestEntityManager entityManager;
@@ -23,26 +23,14 @@ public class PersonRepositoryTest {
     private PersonRepository personRepository;
 
     @Test
-    public void testSavePerson(){
+    void testSavePerson(){
 
         PersonEntity personEntity = new PersonEntity();
         personEntity.setName("Horacio");
         personEntity.setAge(61);
 
-        PersonEntity personEntity2 = new PersonEntity();
-        personEntity2.setName("Grogu");
-        personEntity2.setAge(297);
-
-        log.info("\n   findAll BEFORE SAVE = " + personRepository.findAll());
-
         log.info("\n   saving " + personEntity);
         personRepository.save(personEntity);
-
-        log.info("\n   findAll1 = " + personRepository.findAll());
-
-        personRepository.save(personEntity2);
-
-        log.info("\n   findAll2 = " + personRepository.findAll());
 
         log.info("\n   findByName = " + personRepository.findByName(personEntity.getName()));
 

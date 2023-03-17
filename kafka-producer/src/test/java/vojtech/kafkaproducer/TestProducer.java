@@ -13,10 +13,10 @@ public class TestProducer {
 
     @Autowired
     @Qualifier("embeddedTemplate")
-    private KafkaTemplate<String, Person> embeddedKafkaTemplate;
+    private KafkaTemplate<String, Person> embeddedTemplate;
 
-    public void sendMessage(String topic, Person person){
-        embeddedKafkaTemplate.send(topic, person);
-        log.info("\n   Published message: \"" + person + "\"\n   on topic: \"" + topic + "\"");
+    public void send(String topic, Person person) {
+        log.info("sending payload='{}' to topic='{}'", person.toString(), topic);
+        embeddedTemplate.send(topic, person);
     }
 }

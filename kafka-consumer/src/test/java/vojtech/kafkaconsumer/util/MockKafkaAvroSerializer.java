@@ -1,15 +1,14 @@
-package vojtech.kafkaproducer.util;
+package vojtech.kafkaconsumer.util;
+
 
 import io.confluent.kafka.schemaregistry.client.MockSchemaRegistryClient;
 import io.confluent.kafka.schemaregistry.client.SchemaRegistryClient;
-import io.confluent.kafka.schemaregistry.client.rest.exceptions.RestClientException;
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
 
-import java.io.IOException;
 import java.util.Map;
 
 public class MockKafkaAvroSerializer extends KafkaAvroSerializer {
-    public MockKafkaAvroSerializer() throws RestClientException, IOException {
+    public MockKafkaAvroSerializer() {
         super();
         super.schemaRegistry = new MockSchemaRegistryClient();
     }

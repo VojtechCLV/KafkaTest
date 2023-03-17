@@ -17,18 +17,9 @@ public class PersonEntity extends Person {
         return id;
     }
 
-/*    @Override
-    public String toString() {
-        return ("Person [ ID = " + getId()
-                + ", Name = " + getName()
-                + ", Age = " + getAge()
-                + " ]");
-    }*/
-
-    //@Column(name="name")
+    @Column(name="name")
     private String name;
 
-    //@Column(name="age")
+    @Column(name="age")
     private Integer age;
-
 }
