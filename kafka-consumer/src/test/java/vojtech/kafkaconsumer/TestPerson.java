@@ -1,9 +1,7 @@
-package vojtech.kafkaproducer;
+package vojtech.kafkaconsumer;
 
-import org.springframework.context.annotation.Profile;
 import vojtech.model.Person;
 
-@Profile({"test"})
 public class TestPerson {
 
     private static final String testName = "Grogu";

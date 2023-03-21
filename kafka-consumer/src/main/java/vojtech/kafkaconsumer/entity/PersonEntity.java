@@ -8,41 +8,41 @@ public class PersonEntity {
 
     @Id
     @Column(name="id")
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
+    private String name;
+    private Integer age;
 
-    public Long getId() {
+    public PersonEntity() {
+    }
+
+    public PersonEntity(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public long getId() {
         return id;
+    }
+
+    @Column(name = "name", nullable = false)
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Column(name = "age", nullable = false)
+    public int getAge() {
+        return age;
+    }
+    public void setAge(int age) {
+        this.age = age;
     }
 
     @Override
     public String toString() {
-        return ("Person [ ID = " + getId()
-                + ", Name = " + getName()
-                + ", Age = " + getAge()
-                + " ]");
-    }
-
-    @Column(name="name")
-    private String name;
-
-    public void setName(String name){
-        this.name = name;
-    }
-
-    public String getName(){
-        return this.name;
-    }
-
-
-    @Column(name="age")
-    private Integer age;
-
-    public void setAge(Integer age){
-        this.age = age;
-    }
-
-    public Integer getAge(){
-        return this.age;
+        return "Person [id=" + id + ", name=" + name + ", age=" + age + "]";
     }
 }

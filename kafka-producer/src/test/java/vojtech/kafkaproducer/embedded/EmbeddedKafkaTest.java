@@ -25,7 +25,8 @@ import java.util.concurrent.TimeUnit;
 @SpringBootTest(classes = {
 		EmbeddedConfig.class,
 		TestProducer.class,
-		TestConsumer.class
+		TestConsumer.class,
+		TestPerson.class
 })
 @DirtiesContext
 @ActiveProfiles({ "test" })
@@ -51,7 +52,7 @@ class EmbeddedKafkaTest {
 	}
 
 	@Test
-	void givenEmbeddedKafkaBroker_whenSendingWithCustomSerDe_thenMessagePojoReceived() throws Exception {
+	void whenSendingWithCustomSerDe_thenMessagePojoReceived() throws Exception {
 		producer.send(topic, testPerson);
 
 		log.info("\n   Publishing message: " + testPerson + " \n   Topic: " + topic);
@@ -62,6 +63,4 @@ class EmbeddedKafkaTest {
 		assertEquals(testPerson.getName(), consumer.getPayload().getName());
 		assertEquals(testPerson.getAge(), consumer.getPayload().getAge());
 	}
-
-	// TODO Find out why are we stuck in JoinGroup loop all of a sudden...
 }

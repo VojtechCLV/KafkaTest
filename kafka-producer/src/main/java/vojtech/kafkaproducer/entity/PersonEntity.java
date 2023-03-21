@@ -1,12 +1,10 @@
 package vojtech.kafkaproducer.entity;
 
 import jakarta.persistence.*;
-import vojtech.model.Person;
-
 
 @Entity
 @Table(name="person")
-public class PersonEntity extends Person {
+public class PersonEntity {
 
     @Id
     @Column(name="id")
@@ -23,27 +21,22 @@ public class PersonEntity extends Person {
         this.age = age;
     }
 
-
     public long getId() {
         return id;
     }
 
-    @Override
     @Column(name = "name", nullable = false)
     public String getName() {
         return name;
     }
-    @Override
     public void setName(String name) {
         this.name = name;
     }
 
-    @Override
     @Column(name = "age", nullable = false)
     public int getAge() {
         return age;
     }
-    @Override
     public void setAge(int age) {
         this.age = age;
     }

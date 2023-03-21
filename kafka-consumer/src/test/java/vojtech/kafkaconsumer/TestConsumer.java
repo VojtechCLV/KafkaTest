@@ -2,6 +2,7 @@ package vojtech.kafkaconsumer;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import vojtech.model.Person;
@@ -11,12 +12,13 @@ import java.util.concurrent.CountDownLatch;
 
 @Slf4j
 @Service
+@Profile({"test"})
 public class TestConsumer {
 
     private CountDownLatch latch = new CountDownLatch(1);
     private String payload;
 
-    @KafkaListener(topics = "${test.topic}",
+    @KafkaListener(topics = "${test.kafka.topic.name}",
             autoStartup = "true",
             containerFactory = "embeddedKafkaListenerContainerFactory",
             groupId = "Test_Group")

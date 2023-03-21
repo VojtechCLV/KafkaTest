@@ -3,6 +3,7 @@ package vojtech.kafkaconsumer.mapping;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
+import vojtech.kafkaconsumer.TestPerson;
 import vojtech.kafkaconsumer.entity.PersonEntity;
 import vojtech.kafkaconsumer.mapper.PersonMapper;
 import vojtech.kafkaconsumer.util.PersonGenerator;
@@ -19,7 +20,7 @@ class PersonMapperTest {
 
     @Test
     void givenSrcToDst_whenMaps_thenCorrect() {
-        Person personSrc = PersonGenerator.getRandomPerson();
+        Person personSrc = new Person(TestPerson.getTestPerson().getName(), TestPerson.getTestPerson().getAge());
         PersonEntity personDst = mapper.sourceToDestination(personSrc);
 
         log.info("\n   SRC NAME: " + personSrc.getName() + "\n   SRC AGE: " + personSrc.getAge());

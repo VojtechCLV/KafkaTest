@@ -7,12 +7,14 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.concurrent.CountDownLatch;
 
 @Slf4j
 @Service
 @Profile({"test"})
 public class ByteConsumerService {
 
+    private CountDownLatch latch = new CountDownLatch(1);
     private byte[] payload;
 
     @KafkaListener(topics = "${test.kafka.topic.name}",
@@ -20,10 +22,7 @@ public class ByteConsumerService {
             groupId = "${spring.kafka.consumer.group-id}")
     public void read(ConsumerRecord<String, byte[]> record){
         payload = record.value();
-
-        log.info("   Original Array: " + Arrays.toString(payload));
-
-
+        log.info("   Original Byte Array of Avro Message: " + Arrays.toString(payload));
         byte[] cutArray = new byte[5];
 
         for (int i = payload.length-1, k = 4; i > 0 ; i--) {
@@ -31,8 +30,14 @@ public class ByteConsumerService {
                 cutArray[k--] = payload[i];
             }
         }
+        latch.countDown();
+    }
 
-        log.info("   Array after removal operation: " + Arrays.toString(cutArray));
+    public CountDownLatch getLatch() {
+        return latch;
+    }
+    public void resetLatch() {
+        latch = new CountDownLatch(1);
     }
     public byte[] getPayload() {
         return payload;

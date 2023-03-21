@@ -46,7 +46,7 @@ class CustomSerDeTest {
 
     @Test
     @Order(1)
-    void givenJSONEncoder_whenSerialized_PersonGetsSerialized(){
+    void whenSerialized_thenPersonGetsSerialized(){
         byte[] data = serializer.serialize(topic, testPerson);
         log.info("   SERIALIZATION COMPLETE");
         assertTrue(Objects.nonNull(data));
@@ -57,7 +57,7 @@ class CustomSerDeTest {
 
     @Test
     @Order(2)
-    void givenJSONDecoder_whenDeserialized_PersonGetsDeserialized() {
+    void whenDeserialized_thenPersonGetsDeserialized() {
         byte[] data = serializer.serialize(topic, testPerson);
         Person deSerializedPerson = deserializer.deserialize(topic,data);
         log.info("   DESERIALIZED DATA: " + deSerializedPerson);

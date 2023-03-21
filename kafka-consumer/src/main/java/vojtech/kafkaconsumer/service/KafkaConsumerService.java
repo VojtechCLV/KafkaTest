@@ -11,8 +11,6 @@ import vojtech.kafkaconsumer.entity.PersonEntity;
 import vojtech.kafkaconsumer.mapper.PersonMapper;
 import vojtech.model.Person;
 
-import java.util.concurrent.CountDownLatch;
-
 @Slf4j
 @Service
 public class KafkaConsumerService {
@@ -24,8 +22,6 @@ public class KafkaConsumerService {
     @KafkaListener(topics = "${spring.kafka.topic.name}",
             containerFactory = "kafkaListenerContainerFactory",
             groupId = "${spring.kafka.consumer.group-id}")
-
-
     public void read(ConsumerRecord<String, Person> message){
         String key=message.key();
         Person person=message.value();

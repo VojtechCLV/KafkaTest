@@ -1,4 +1,4 @@
-package vojtech.kafkaproducer.repository;
+package vojtech.kafkaconsumer.repository;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -6,9 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
-import vojtech.kafkaproducer.PersonRepository;
-import vojtech.kafkaproducer.TestPerson;
-import vojtech.kafkaproducer.entity.PersonEntity;
+import vojtech.kafkaconsumer.TestPerson;
+import vojtech.kafkaconsumer.entity.PersonEntity;
 
 import java.util.List;
 
@@ -67,8 +66,9 @@ class PersonRepositoryTest {
         assertEquals(1,resultList.size(),
                 "Should have found exactly 1 match");
         assertEquals(NAME_ONE,resultList.get(0).getName(),
-                "Result should have contained one entity with name ");
+                "Result should have contained one entity with name " + NAME_ONE);
         assertEquals("Person [id=1, name=" + NAME_ONE + ", age=" + AGE_ONE + "]",resultList.get(0).toString(),
                 "Mismatch of string representation or test data values");
+
     }
 }

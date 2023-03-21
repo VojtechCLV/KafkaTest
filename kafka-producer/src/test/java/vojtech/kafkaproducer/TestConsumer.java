@@ -16,7 +16,6 @@ public class TestConsumer {
     private Person payload;
 
     @KafkaListener(topics = "${test.kafka.topic.name}",
-            autoStartup = "true",
             containerFactory = "embeddedKafkaListenerContainerFactory",
             groupId = "Test_Group")
     public void receive(ConsumerRecord<?, Person> consumerRecord) {

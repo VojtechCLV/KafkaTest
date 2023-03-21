@@ -19,6 +19,5 @@ public interface PersonRepository extends JpaRepository<PersonEntity, Long> {
     @Query("SELECT p.name, p.age FROM PersonEntity p")
     List<String> findNameAge();
 
-
     PersonEntity findById(long id);
 }

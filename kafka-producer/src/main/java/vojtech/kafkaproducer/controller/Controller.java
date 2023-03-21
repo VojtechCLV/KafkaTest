@@ -48,7 +48,6 @@ public class Controller {
                     }
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
-                    throw new RuntimeException(e);
                 }
             }, "autoSendThread");
             autoSendThread.start();
@@ -63,7 +62,7 @@ public class Controller {
     public ResponseEntity<String> stopSending() {
 
         try {
-            log.error("Interrupting autoSend thread");
+            log.info("Interrupting autoSend thread");
             getThreadByName("autoSendThread").interrupt();
             }
         catch(Exception e) {
