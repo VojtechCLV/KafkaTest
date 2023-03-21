@@ -1,9 +1,8 @@
 package vojtech.kafkaconsumer.embedded;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import io.confluent.kafka.schemaregistry.client.SchemaRegistryClient;
-import io.confluent.kafka.schemaregistry.testutil.MockSchemaRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,16 +18,14 @@ import vojtech.kafkaconsumer.TestProducer;
 import vojtech.kafkaconsumer.repository.PersonRepository;
 import vojtech.model.Person;
 
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
-
-// TODO
-// Enable Schema Registry mocking so specific 5 Avro bytes are present in integration testing
-// without actual Schema Registry present on network
 
 @Slf4j
 @SpringBootTest(classes = {
 		EmbeddedConfig.class,
 		PersonRepository.class,
+		ByteConsumerService.class,
 		TestProducer.class,
 		TestConsumer.class
 })
@@ -40,7 +37,10 @@ import java.util.concurrent.TimeUnit;
 class EmbeddedKafkaTest {
 
 	@Autowired
-	private TestConsumer consumer;
+	private TestConsumer avroConsumer;
+
+	@Autowired
+	private ByteConsumerService byteConsumer;
 
 	@Autowired
 	private TestProducer producer;
@@ -53,10 +53,25 @@ class EmbeddedKafkaTest {
 			throws Exception {
 		Person testPerson = new Person("Tester",1);
 
+		String bytePayload, avroPayload;
+
 		producer.send(topic, testPerson);
 
-		boolean messageConsumed = consumer.getLatch().await(10, TimeUnit.SECONDS);
+		boolean messageConsumed = avroConsumer.getLatch().await(10, TimeUnit.SECONDS);
 		assertTrue(messageConsumed);
-		assertTrue(consumer.getPayload().toString().contains(testPerson.toString()));
+
+		avroPayload = avroConsumer.getPayload().toString();
+		bytePayload = Arrays.toString(byteConsumer.getPayload());
+
+		assertTrue(avroConsumer.getPayload().toString().contains(testPerson.toString()),
+				"Person info not found in message");
+
+		assertEquals(testPerson.toString(), avroPayload,
+				"Deserialized message does not match expected string");
+
+		String expectedBytePayload = "[0, 0, 0, 0, 1, 12, 84, 101, 115, 116, 101, 114, 2]";
+		assertEquals(expectedBytePayload, bytePayload,
+				"Should start with 0 magic byte, and then 4 bytes for schema ID like 0001, " +
+						"followed by serialized message");
 	}
 }

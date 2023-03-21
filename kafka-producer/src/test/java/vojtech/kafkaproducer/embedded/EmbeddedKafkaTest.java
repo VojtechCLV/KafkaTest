@@ -63,5 +63,5 @@ class EmbeddedKafkaTest {
 		assertEquals(testPerson.getAge(), consumer.getPayload().getAge());
 	}
 
-	// TODO Find out why are we stuck in  JoinGroup loop all of a sudden...
+	// TODO Find out why are we stuck in JoinGroup loop all of a sudden...
 }

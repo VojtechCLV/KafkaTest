@@ -6,17 +6,16 @@ import io.confluent.kafka.serializers.KafkaAvroSerializer;
 import io.confluent.kafka.serializers.KafkaAvroSerializerConfig;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.serialization.ByteArrayDeserializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.*;
-import vojtech.kafkaconsumer.util.MockKafkaAvroDeserializer;
-import vojtech.kafkaconsumer.util.MockKafkaAvroSerializer;
+import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import vojtech.model.Person;
 
 import java.util.HashMap;
@@ -54,11 +53,30 @@ public class EmbeddedConfig {
         testProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         testProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         testProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
+        //testProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
+        //testProps.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, ByteArrayDeserializer.class);
         //testProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, MockKafkaAvroDeserializer.class);
         testProps.put(KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistry);
         testProps.put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, true);
         return new DefaultKafkaConsumerFactory<>(testProps);
     }
+
+
+    @Bean
+    public ConsumerFactory<String, byte[]> bytePersonConsumerFactory() {
+        Map<String, Object> testProps = new HashMap<>();
+        testProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        testProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        testProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        //testProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class);
+        testProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
+        testProps.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, ByteArrayDeserializer.class);
+        //testProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, MockKafkaAvroDeserializer.class);
+        testProps.put(KafkaAvroDeserializerConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistry);
+        testProps.put(KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG, true);
+        return new DefaultKafkaConsumerFactory<>(testProps);
+    }
+
 
     @Bean
     //@Qualifier("embeddedPersonConsumerFactory")
@@ -69,8 +87,8 @@ public class EmbeddedConfig {
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, Person> kafkaListenerContainerFactory(final ConsumerFactory<String, Person> consumerFactory) {
-        final ConcurrentKafkaListenerContainerFactory<String, Person> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    public ConcurrentKafkaListenerContainerFactory<String, byte[]> byteKafkaListenerContainerFactory(final ConsumerFactory<String, byte[]> consumerFactory) {
+        final ConcurrentKafkaListenerContainerFactory<String, byte[]> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory);
         return factory;
     }

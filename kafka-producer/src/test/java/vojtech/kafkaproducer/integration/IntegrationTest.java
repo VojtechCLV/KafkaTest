@@ -115,5 +115,5 @@ public class IntegrationTest {
         }
     }*/
 
-    //TODO Gotta fix schema registry mocking
+    //TODO Gotta fix schema registry mocking - DONE for Consumer
 }

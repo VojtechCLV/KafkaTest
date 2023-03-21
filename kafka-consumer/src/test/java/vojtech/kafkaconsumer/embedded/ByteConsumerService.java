@@ -1,23 +1,28 @@
 package vojtech.kafkaconsumer.embedded;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.springframework.context.annotation.Profile;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
-// To be used for testing once Schema Registry is mocked and Avro message contains 5 Avro bytes
+import java.util.Arrays;
 
 @Slf4j
 @Service
+@Profile({"test"})
 public class ByteConsumerService {
-/*
-    @KafkaListener(topics = "${spring.kafka.topic.name}",
-            containerFactory = "kafkaListenerContainerFactory",
+
+    private byte[] payload;
+
+    @KafkaListener(topics = "${test.kafka.topic.name}",
+            containerFactory = "byteKafkaListenerContainerFactory",
             groupId = "${spring.kafka.consumer.group-id}")
     public void read(ConsumerRecord<String, byte[]> record){
-        String key=record.key();
-        byte[] payload = record.value();
-        long offset= record.offset();
+        payload = record.value();
 
-        System.out.println("   Original Array: " + Arrays.toString(payload));
+        log.info("   Original Array: " + Arrays.toString(payload));
+
 
         byte[] cutArray = new byte[5];
 
@@ -27,6 +32,9 @@ public class ByteConsumerService {
             }
         }
 
-        System.out.println("   Array after removal operation: " + Arrays.toString(cutArray));
-    }*/
+        log.info("   Array after removal operation: " + Arrays.toString(cutArray));
+    }
+    public byte[] getPayload() {
+        return payload;
+    }
 }
