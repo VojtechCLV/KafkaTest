@@ -8,7 +8,8 @@ public class PersonEntity {
 
     @Id
     @Column(name="id")
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    //@GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="pk_sequence")
     private Long id;
     private String name;
     private Integer age;

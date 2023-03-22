@@ -1,5 +1,9 @@
 package vojtech.kafkaproducer.controller;
 
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.info.Contact;
+import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.info.License;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +13,18 @@ import org.springframework.web.bind.annotation.*;
 import vojtech.kafkaproducer.service.KafkaProducerService;
 import vojtech.model.Person;
 
+@OpenAPIDefinition(info = @Info(
+        title = "Producer API",
+        description = "API for generating and sending person data to Kafka",
+        version = "2.0",
+        contact = @Contact(
+                name = "Vojtech Moravec",
+                email = "email@moravecvoj.tech"
+        ),
+        license = @License(
+                name = "MIT Licence",
+                url = "https://opensource.org/licenses/mit-license.php"
+        )))
 @Slf4j
 @RestController
 @RequiredArgsConstructor

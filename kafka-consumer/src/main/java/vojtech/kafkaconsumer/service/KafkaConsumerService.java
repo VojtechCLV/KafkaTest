@@ -33,12 +33,6 @@ public class KafkaConsumerService {
         // Saving received person into repository
         standPersonRepository.save(personDst);
 
-        // Check for people named Honza saved in the session
-        if (standPersonRepository.findByName("Honza").isEmpty()) {
-            log.info("\n   Didn't find any Honza");
-        } else {
-            log.info("\n   Found " + standPersonRepository.findByName("Honza").size()
-                    + " instance(s) of Honza");
-        }
+        log.info("Saved " + personDst + " into database");
     }
 }
