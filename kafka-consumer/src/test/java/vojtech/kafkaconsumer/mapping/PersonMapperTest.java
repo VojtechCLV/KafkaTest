@@ -14,9 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @Slf4j
 class PersonMapperTest {
 
-
-    private final PersonMapper mapper
-            = Mappers.getMapper(PersonMapper.class);
+    private final PersonMapper mapper = Mappers.getMapper(PersonMapper.class);
 
     @Test
     void givenSrcToDst_whenMaps_thenCorrect() {
