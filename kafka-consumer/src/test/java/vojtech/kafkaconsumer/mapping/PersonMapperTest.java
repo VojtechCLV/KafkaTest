@@ -21,8 +21,8 @@ class PersonMapperTest {
         Person personSrc = new Person(TestPerson.getTestPerson().getName(), TestPerson.getTestPerson().getAge());
         PersonEntity personDst = mapper.sourceToDestination(personSrc);
 
-        log.info("\n   SRC NAME: " + personSrc.getName() + "\n   SRC AGE: " + personSrc.getAge());
-        log.info("\n   DST NAME: " + personDst.getName() + "\n   DST AGE: " + personDst.getAge());
+        log.info("\n   SRC NAME: {}\n   SRC AGE: {}", personSrc.getName(), personSrc.getAge());
+        log.info("\n   DST NAME: {}\n   DST AGE: {}", personDst.getName(), personDst.getAge());
 
         assertEquals(personSrc.getName(), personDst.getName());
         assertEquals(personSrc.getAge(), personDst.getAge());
@@ -35,8 +35,8 @@ class PersonMapperTest {
         personDst.setAge(PersonGenerator.randomAge());
         Person personSrc = mapper.destinationToSource(personDst);
 
-        log.info("\n   DST NAME: " + personDst.getName() + "\n   DST AGE: " + personDst.getAge());
-        log.info("\n   SRC NAME: " + personSrc.getName() + "\n   SRC AGE: " + personSrc.getAge());
+        log.info("\n   DST NAME: {}\n   DST AGE: {}", personDst.getName(), personDst.getAge());
+        log.info("\n   SRC NAME: {}\n   SRC AGE: {}", personSrc.getName(), personSrc.getAge());
 
         assertEquals(personDst.getName(), personSrc.getName());
         assertEquals(personDst.getAge(), personSrc.getAge());

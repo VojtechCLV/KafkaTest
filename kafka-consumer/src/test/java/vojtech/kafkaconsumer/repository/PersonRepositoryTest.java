@@ -35,7 +35,6 @@ class PersonRepositoryTest {
         String NAME_TWO = "Rick";
         int AGE_TWO = 57;
 
-
         log.info("\n   Creating entities to test, verifying values...");
         PersonEntity personEntity = new PersonEntity(NAME_ONE,AGE_ONE);
         PersonEntity personEntity2 = new PersonEntity(NAME_TWO,AGE_TWO);
@@ -47,10 +46,10 @@ class PersonRepositoryTest {
         assertEquals(AGE_ONE,personEntity.getAge(),
                 "Failed to get saved age from entity correctly");
 
-        log.info("\n   Saving first entity: " + personEntity);
+        log.info("\n   Saving first entity: {}", personEntity);
         personRepository.save(personEntity);
 
-        log.info("\n   Saving second entity: " + personEntity2);
+        log.info("\n   Saving second entity: {}", personEntity2);
         personRepository.save(personEntity2);
 
         log.info("\n   Checking IDs of saved entities");
@@ -63,7 +62,7 @@ class PersonRepositoryTest {
         assertEquals(2,personRepository.findAll().size(),
                 "Should have found exactly 2 matches");
 
-        log.info("\n   Verifying results of findByName query for " + NAME_ONE);
+        log.info("\n   Verifying results of findByName query for {}", NAME_ONE);
         List<PersonEntity> resultList = personRepository.findByName(NAME_ONE);
         assertEquals(1,resultList.size(),
                 "Should have found exactly 1 match");

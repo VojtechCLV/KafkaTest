@@ -22,7 +22,7 @@ public class ByteConsumerService {
             groupId = "${spring.kafka.consumer.group-id}")
     public void read(ConsumerRecord<String, byte[]> record){
         payload = record.value();
-        log.info("   Original Byte Array of Avro Message: " + Arrays.toString(payload));
+        log.info("   Original Byte Array of Avro Message: {}", Arrays.toString(payload));
         byte[] cutArray = new byte[5];
 
         for (int i = payload.length-1, k = 4; i > 0 ; i--) {

@@ -54,7 +54,7 @@ public class Controller {
     @PostMapping("/start")
     public ResponseEntity<String> startSending(@RequestParam Integer messages, @RequestParam Long millis) {
 
-        log.info("   Starting AutoSend, sending " + messages + " messages, " + millis + " millisecond delay between each");
+        log.info("   Starting AutoSend, sending {} messages, {} millisecond delay between each", messages, millis);
         try {
             Thread autoSendThread = new Thread(() -> {
                 try {

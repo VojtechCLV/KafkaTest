@@ -6,6 +6,7 @@ import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
+import vojtech.kafkaconsumer.authentication.AppUserRepository;
 import vojtech.kafkaconsumer.repository.PersonRepository;
 import vojtech.kafkaconsumer.entity.PersonEntity;
 import vojtech.kafkaconsumer.mapper.PersonMapper;
@@ -19,13 +20,16 @@ public class KafkaConsumerService {
     @Autowired
     private PersonRepository standPersonRepository;
 
+    @Autowired
+    private AppUserRepository appUserRepository;
+
     @KafkaListener(topics = "${spring.kafka.topic.name}",
             containerFactory = "kafkaListenerContainerFactory",
             groupId = "${spring.kafka.consumer.group-id}")
     public void read(ConsumerRecord<String, Person> message){
         String key=message.key();
         Person person=message.value();
-        log.info("Avro message received: \n key: " + key + "\n value : " + person.toString());
+        log.info("Avro message received: \n key: {}\n value : {}", key, person.toString());
 
         // Load the mapper to map received person into repository-friendly entity
         PersonEntity personDst = mapper.sourceToDestination(person);

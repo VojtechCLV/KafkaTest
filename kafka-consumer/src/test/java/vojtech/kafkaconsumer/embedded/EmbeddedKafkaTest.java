@@ -63,7 +63,7 @@ class EmbeddedKafkaTest {
 
 		String bytePayload, avroPayload;
 
-		log.info("   Sending Test Person " + testPerson + " to test topic...");
+		log.info("   Sending Test Person {} to test topic...", testPerson);
 		producer.send(topic, testPerson);
 
 		boolean messageConsumed = avroConsumer.getLatch().await(10, TimeUnit.SECONDS);
