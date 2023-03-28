@@ -2,7 +2,7 @@
 
 Producer and Consumer of Kafka messages, uses Person object (generated from Avro schema) as value
 
-NOTE: Kafka, Zookeeper, and Schema Registry need to be running (locally or in Docker)
+NOTE: Kafka, Zookeeper, and Schema Registry need to be running (locally or in Docker). PostgreSQL should also be running, `backup.sql` contains 10 person entries and 1 authentication user
 
 ### Instructions
 
@@ -20,6 +20,25 @@ If you'd like to stop sending messages, send another POST request to
 ```
 http://localhost:8080/kafka/stop
 ```
-
+Producer also has Swagger UI available at the following address
+```
+http://localhost:8080/swagger-ui/index.html#
+```
 These messages will be automatically consumed by kafka-consumer, their content will be displayed in logs as they are 
 mapped to a repository-friendly entity object and saved to repository
+
+Consumer has some API endpoints available as well, though these are protected by Spring Security and require authorization. One valid account is stored in PostgreSQL DB with BCrypt encrypted password. The credentials one should enter to get through are:
+```
+Username: admin
+Password: simplyclever
+```
+
+To search for a person by name, use following endpoint to receive JSON result 
+or an error message in case no such user is found. Name is provided as part of the path
+```
+localhost:8090/kafka/find/{NAME}
+```
+To search for a person by ID, use the following endpoint where ID is provided as a parameter
+```
+localhost:8090/kafka/find-person-by-id?id={ID}
+```
