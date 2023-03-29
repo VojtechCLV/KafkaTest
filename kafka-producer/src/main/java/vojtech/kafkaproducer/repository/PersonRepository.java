@@ -1,4 +1,4 @@
-package vojtech.kafkaproducer;
+package vojtech.kafkaproducer.repository;
 
 import java.util.List;
 

@@ -1,0 +1,90 @@
+openapi: 3.0.3
+info:
+  title: Producer API
+  description: API for generating and sending person data to Kafka
+  contact:
+    name: Vojtech Moravec
+    email: email@moravecvoj.tech
+  license:
+    name: MIT Licence
+    url: https://opensource.org/licenses/mit-license.php
+  version: '2.0'
+tags:
+  - name: generate
+    description: Controls for person generator (publisher)
+  - name: publish
+    description: Publishing custom person in JSON format
+paths:
+  /kafka/publish:
+    post:
+      tags:
+        - publish
+      summary: Publish person entity
+      description: Publish a person entity in JSON format
+      operationId: sendPerson
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Person'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+        '500':
+          description: Possibly Invalid Data
+  /kafka/generate/stop:
+    post:
+      tags:
+        - generate
+      summary: Stop AutoSend
+      description: Stop the AutoSend feature before time runs out
+      operationId: stopSending
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+  /kafka/generate/start:
+    post:
+      tags:
+        - generate
+      summary: Start AutoSend
+      description: Start the AutoSend feature, generating and publishing randomized person data
+      operationId: startSending
+      parameters:
+        - name: messages
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: millis
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+components:
+  schemas:
+    Person:
+      type: object
+      properties:
+        name:
+          type: string
+        age:
+          type: integer
+          format: int32

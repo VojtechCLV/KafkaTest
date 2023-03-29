@@ -1,59 +1,52 @@
-package vojtech.kafkaproducer.controller;
+package vojtech.kafkaproducer.api;
 
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
-import io.swagger.v3.oas.annotations.info.Contact;
-import io.swagger.v3.oas.annotations.info.Info;
-import io.swagger.v3.oas.annotations.info.License;
-import lombok.RequiredArgsConstructor;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
+import org.mapstruct.factory.Mappers;
+import org.openapitools.api.KafkaApi;
+import org.openapitools.model.Person;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import vojtech.kafkaproducer.mapper.PersonMapper;
 import vojtech.kafkaproducer.service.KafkaProducerService;
-import vojtech.model.Person;
+import vojtech.kafkaproducer.util.ThreadFinder;
 
-@OpenAPIDefinition(info = @Info(
-        title = "Producer API",
-        description = "API for generating and sending person data to Kafka",
-        version = "2.0",
-        contact = @Contact(
-                name = "Vojtech Moravec",
-                email = "email@moravecvoj.tech"
-        ),
-        license = @License(
-                name = "MIT Licence",
-                url = "https://opensource.org/licenses/mit-license.php"
-        )))
+import java.util.Objects;
+
 @Slf4j
 @RestController
-@RequiredArgsConstructor
-@RequestMapping(value = "/kafka")
-public class Controller {
-
-    @Value("${spring.kafka.topic.name}")
-    private String topicName;
+public class Controller implements KafkaApi {
 
     static final String OKRESPONSE = "Ok";
+
+    private final PersonMapper mapper = Mappers.getMapper(PersonMapper.class);
 
     @Autowired
     KafkaProducerService kafkaProducer;
 
-    @PostMapping("/publish")
-    public ResponseEntity<String> sendPerson(@RequestBody Person person) {
+    @Value("${spring.kafka.topic.name}")
+    private String topicName;
+
+    @Override
+    public ResponseEntity<String> sendPerson(Person person) {
         try {
-            log.info("   Sending person");
-            kafkaProducer.sendMessage(topicName, person);
+            vojtech.model.Person personSrc = mapper.destinationToSource(person);
+            kafkaProducer.sendMessage(topicName, personSrc);
             return ResponseEntity.ok(OKRESPONSE);
         } catch(Exception e) {
-            log.error(e.getMessage());
             return ResponseEntity.internalServerError().body(e.getCause().toString());
         }
     }
 
-    @PostMapping("/start")
-    public ResponseEntity<String> startSending(@RequestParam Integer messages, @RequestParam Long millis) {
-
+    @Override
+    public ResponseEntity<String> startSending(Integer messages, Long millis) {
         log.info("   Starting AutoSend, sending {} messages, {} millisecond delay between each", messages, millis);
         try {
             Thread autoSendThread = new Thread(() -> {
@@ -74,25 +67,16 @@ public class Controller {
         }
     }
 
-    @PostMapping("/stop")
+    @Override
     public ResponseEntity<String> stopSending() {
-
         try {
             log.info("Interrupting autoSend thread");
-            getThreadByName("autoSendThread").interrupt();
-            }
+            Objects.requireNonNull(ThreadFinder.getThreadByName("autoSendThread")).interrupt();
+        }
         catch(Exception e) {
             log.error(e.getMessage());
             return ResponseEntity.internalServerError().body(e.getCause().toString());
         }
         return ResponseEntity.ok(OKRESPONSE);
     }
-
-    public Thread getThreadByName(String name) {
-        for (Thread thread : Thread.getAllStackTraces().keySet()) {
-            if (thread.getName().equals(name)) return thread;
-        }
-        return null;
-    }
-
 }
