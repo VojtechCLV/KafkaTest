@@ -59,6 +59,7 @@ class EmbeddedKafkaTest {
 
 		boolean messageConsumed = consumer.getLatch()
 				.await(10, TimeUnit.SECONDS);
+
 		assertTrue(messageConsumed);
 		assertEquals(testPerson.getName(), consumer.getPayload().getName());
 		assertEquals(testPerson.getAge(), consumer.getPayload().getAge());

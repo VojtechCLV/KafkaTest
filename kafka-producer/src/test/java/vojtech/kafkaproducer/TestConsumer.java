@@ -12,15 +12,15 @@ import java.util.concurrent.CountDownLatch;
 @Service
 public class TestConsumer {
 
-    private CountDownLatch latch = new CountDownLatch(1);
-    private Person payload;
+    private static CountDownLatch latch = new CountDownLatch(1);
+    private static Person payload;
 
     @KafkaListener(topics = "${test.kafka.topic.name}",
             containerFactory = "embeddedKafkaListenerContainerFactory",
-            groupId = "Test_Group")
+            groupId = "${test.kafka.consumer.group-id}")
     public void receive(ConsumerRecord<?, Person> consumerRecord) {
-        log.info("received payload = '{}'", consumerRecord.toString());
-        log.info("   VALUE: = '{}'", consumerRecord.value().toString());
+        log.info("\n   RECEIVED PAYLOAD = '{}'", consumerRecord.toString());
+        log.info("\n   VALUE: = '{}'", consumerRecord.value().toString());
         payload = consumerRecord.value();
         latch.countDown();
     }
