@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import vojtech.kafkaconsumer.entity.PersonEntity;
 import vojtech.kafkaconsumer.repository.PersonRepository;
+import vojtech.kafkaconsumer.util.Benchmark;
 
 import java.util.List;
 import java.util.Optional;
@@ -41,6 +42,51 @@ public class Controller {
                 .status(Response.Status.OK)
                 .entity(personList)
                 .build();
+    }
+
+    @Produces(MediaType.TEXT_PLAIN)
+    @GET
+    @Path("/benchmark/purge")
+    public Response purgeBenchmark() {
+
+        if (Benchmark.getDurationListIsEmpty()) {
+            return Response
+                    .status(Response.Status.OK)
+                    .entity("There is no captured data to purge, nothing to do...")
+                    .build();
+        }
+
+        Benchmark.purgeAll();
+
+        if (Benchmark.getDurationListIsEmpty()) {
+            return Response
+                    .status(Response.Status.OK)
+                    .entity("Benchmark data has been purged")
+                    .build();
+        } else {
+            return Response
+                    .status(Response.Status.EXPECTATION_FAILED)
+                    .entity("Spanish inquisition")
+                    .build();
+        }
+    }
+
+    @Produces(MediaType.APPLICATION_JSON)
+    @GET
+    @Path("/benchmark/generate-results")
+    public Response generateResults() {
+
+        if (Benchmark.getDurationListIsEmpty()) {
+            return Response
+                    .status(Response.Status.OK)
+                    .entity("There is no captured data to process, try sending some messages first")
+                    .build();
+        } else {
+            return Response
+                    .status(Response.Status.OK)
+                    .entity(Benchmark.processAndGetResults())
+                    .build();
+        }
     }
 
     @Produces(MediaType.APPLICATION_JSON)
