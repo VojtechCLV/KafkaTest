@@ -41,32 +41,14 @@ public class KafkaConsumerService {
         String key=message.key();
         Person person=message.value();
 
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss.SSS");
-
         log.info("Avro message received: \n key: {}\n value : {}", key, person.toString());
 
-        // Load the mapper to map received person into repository-friendly entity
+        // Map received person into repository-friendly entity
         PersonEntity personDst = mapper.sourceToDestination(person);
 
         // Saving received person into repository
         standPersonRepository.save(personDst);
 
-        PersonEntity entity = personRepository.findById(personDst.getId());
-
-        log.info("\n   Message: " + message);
-
-        log.info("\n   Message .timestamp(): " + message.timestamp());
-
-        log.info("\n   Time from producer to consumer in millis: " + millisSinceCreation);
-
         Benchmark.addToDurationList(millisSinceCreation);
-
-        log.info("\n   CurrentTime before reading from DB " + dtf.format(LocalDateTime.now()));
-
-        log.info("\n   findById: " + entity);
-
-        log.info("\n   CurrentTime after reading from DB " + dtf.format(LocalDateTime.now()));
-
-        log.info("Saved " + personDst + " into database");
     }
 }

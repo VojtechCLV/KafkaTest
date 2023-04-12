@@ -281,11 +281,11 @@
 							<generateModelTests>false</generateModelTests>
 							<generateModelDocumentation>false</generateModelDocumentation>
 							<generateSupportingFiles>false</generateSupportingFiles>
-							<environmentVariables>
+							<globalProperties>
 								<supportingFiles>
 									ApiUtil.java
 								</supportingFiles>
-							</environmentVariables>
+							</globalProperties>
 							<configOptions>
 								<useJakartaEe>true</useJakartaEe>
 								<useSpringBoot3>true</useSpringBoot3>
