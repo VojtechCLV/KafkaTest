@@ -22,16 +22,17 @@ public class KafkaProducerService {
     private String topic;
 
     public void autoSend(int messages, long millis) throws InterruptedException {
-        for (int i=0; i<messages; i++) {
-            try {
+        try {
+            for (int i=0; i<messages; i++) {
                 Thread.sleep(millis);
                 Person person = PersonGenerator.getRandomPerson();
                 sendMessage(topic, person);
-            }catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                log.info(e.getMessage());
-                break;
             }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            log.info(e.getMessage());
+        } finally {
+            Thread.currentThread().interrupt();
         }
     }
 
