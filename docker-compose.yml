@@ -10,6 +10,8 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - vojtechclv
 
   broker:
     image: confluentinc/cp-server:7.3.2
@@ -39,6 +41,8 @@ services:
       CONFLUENT_METRICS_REPORTER_TOPIC_REPLICAS: 1
       CONFLUENT_METRICS_ENABLE: 'true'
       CONFLUENT_SUPPORT_CUSTOMER_ID: 'anonymous'
+    networks:
+      - vojtechclv
 
   schema-registry:
     image: confluentinc/cp-schema-registry:7.3.2
@@ -52,6 +56,8 @@ services:
       SCHEMA_REGISTRY_HOST_NAME: schema-registry
       SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: 'broker:29092'
       SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+    networks:
+      - vojtechclv
 
   db:
     image: postgres:15.2-alpine3.17
@@ -66,9 +72,11 @@ services:
     volumes:
       - db:/var/lib/postgresql/data
       - ./backup.sql:/docker-entrypoint-initdb.d/create_tables.sql
+    networks:
+      - vojtechclv
 
   kafka-consumer:
-    image: docker.io/library/kafka-consumer
+    image: docker.io/vojtechclv/kafka-consumer:v1.1
     hostname: kafka-consumer
     container_name: kafka-consumer
     ports:
@@ -87,9 +95,11 @@ services:
       SCHEMA_REG_CONTAINER: schema-registry
       SCHEMA_REG_PORT: 8081
       SERVER_PORT: 8090
+    networks:
+      - vojtechclv
 
   kafka-producer:
-    image: docker.io/library/kafka-producer
+    image: docker.io/vojtechclv/kafka-producer:v1.1
     hostname: kafka-producer
     container_name: kafka-producer
     ports:
@@ -102,6 +112,11 @@ services:
       SCHEMA_REG_CONTAINER: schema-registry
       SCHEMA_REG_PORT: 8081
       SERVER_PORT: 8080
+    networks:
+      - vojtechclv
+
+networks:
+  vojtechclv:
 
 volumes:
   db:

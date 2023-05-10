@@ -2,10 +2,16 @@
 
 Producer and Consumer of Kafka messages, uses Person object (generated from Avro schema) as value
 
-NOTE: Kafka, Zookeeper, and Schema Registry need to be running (locally or in Docker). PostgreSQL should also be running, `backup.sql` contains 10 person entries and 1 authentication user
+NOTE: Kafka, Zookeeper, and Schema Registry need to be running (locally or in a container). PostgreSQL should also be running, `backup.sql` contains 10 person entries and 1 authentication user
 
-NOTE2: 🎉 Docker Compose Available 🎉 docker-compose.yml is now available to set up everything including initial SQL
-and connection between containers. Use `docker compose up -d` to fire up the collection. Speaking of collections,
+NOTE2: docker-compose.yml is now available to set up everything including initial SQL
+and connection between containers. We're also switching to `podman` as it is a nice open source alternative to `Docker Desktop`.
+Build the images to match the docker-compose.yml instructions using commands such as
+```
+podman build -t docker.io/vojtechclv/kafka-consumer:v1.1 kafka-consumer/
+podman build -t docker.io/vojtechclv/kafka-producer:v1.1 kafka-producer/
+```
+And use `podman-compose up -d` to fire up the collection. Speaking of collections,
 postman_collection.json is now also available to be imported into Postman and make usage easier.
 
 ### Instructions
